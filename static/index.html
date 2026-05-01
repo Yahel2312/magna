@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Asistencia</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #74143e;
+            color: white;
+        }
+
+        input {
+            font-size: 22px;
+            padding: 10px;
+            width: 300px;
+            margin: 20px;
+        }
+
+        button {
+            font-size: 18px;
+            margin: 5px;
+            padding: 12px;
+            width: 300px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button:hover {
+            background: #01ff0e;
+            color: black;
+            cursor: pointer;
+        }
+
+        #mensaje {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #f80f0f;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Registro de Asistencia</h1>
+<h2 id="contador">Asistentes: 0</h2>
+
+<input type="text" id="buscador" placeholder="Escribe nombre..." onkeyup="buscar()">
+
+<div id="resultados"></div>
+
+<h2 id="mensaje"></h2>
+
+<script>
+async function buscar() {
+    let texto = document.getElementById("buscador").value;
+
+    if (texto.length < 2) {
+        document.getElementById("resultados").innerHTML = "";
+        return;
+    }
+
+    let res = await fetch(`/buscar?nombre=${texto}`);
+    let data = await res.json();
+
+    let html = "";
+
+    data.forEach(j => {
+        html += `<button onclick="registrar(${j.id}, '${j.nombre}')">${j.nombre}</button>`;
+    });
+
+    document.getElementById("resultados").innerHTML = html;
+}
+
+async function registrar(id, nombre) {
+    let res = await fetch(`/asistencia_manual?joven_id=${id}&evento_id=${EVENTO_ID}`, {
+    method: "POST"
+});
+
+    let data = await res.json();
+
+    document.getElementById("mensaje").innerText =
+    "✔ " + nombre + " registrado correctamente";
+
+    document.getElementById("buscador").value = "";
+    document.getElementById("resultados").innerHTML = "";
+}
+async function actualizarContador() {
+    let res = await fetch(`/evento/${EVENTO_ID}/conteo`)
+    let data = await res.json();
+
+    document.getElementById("contador").innerText =
+        "Asistentes: " + data.asistentes;
+}
+
+// actualizar cada 2 segundos
+setInterval(actualizarContador, 2000);
+
+let EVENTO_ID = null;
+
+async function obtenerEvento() {
+    let res = await fetch("/evento/activo");
+    let data = await res.json();
+
+    EVENTO_ID = data.evento_id;
+}
+</script>
+
+obtenerEvento();
+
+</body>
+</html>
