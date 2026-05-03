@@ -263,7 +263,7 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
 
 @app.get("/test")
 def test():
-    return {"mensaje": "funciona"}
+    return {"mensaje": "funciona test"}
 
-print("prueba")
+
 
