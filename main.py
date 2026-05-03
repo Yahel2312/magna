@@ -6,8 +6,6 @@ from pydantic import BaseModel
 from datetime import datetime
 from datetime import timedelta
 from openpyxl import Workbook
-#import pandas as pd#
-#from fastapi.responses import FileResponse
 
 # Crear las tablas
 models.Base.metadata.create_all(bind=engine)
@@ -194,17 +192,14 @@ def asistencia_manual(joven_id: int, evento_id: int, db: Session = Depends(get_d
         models.Asistencia.evento_id == evento_id
     ).first()
 
-    if existe:
-        return {"mensaje": "Ya registrado"}
+    if not existe:
+        nueva = models.Asistencia(joven_id=joven_id, evento_id=evento_id)
+        db.add(nueva)
 
-    nueva = models.Asistencia(joven_id=joven_id, evento_id=evento_id)
-    db.add(nueva)
+        joven.puntos_totales += 10
+        db.commit()
 
-    joven.puntos_totales += 10
-
-    db.commit()
-
-    # 🔥 AQUÍ VA
+    # 🔥 SIEMPRE GENERA EXCEL (clave)
     generar_excel(db)
 
     return {"mensaje": "Asistencia registrada"}
@@ -268,6 +263,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 def home():
     return FileResponse(os.path.join(BASE_DIR, "main.html"))
 
+
 @app.get("/admin/excel")
 def ver_excel():
     ruta = os.path.join(BASE_DIR, "asistencia.xlsx")
@@ -276,3 +272,4 @@ def ver_excel():
         return {"error": "Excel no existe aún"}
 
     return FileResponse(ruta, filename="asistencia.xlsx")
+
