@@ -6,11 +6,6 @@ from pydantic import BaseModel
 from datetime import datetime
 from datetime import timedelta
 from openpyxl import Workbook
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-import os
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 #import pandas as pd#
 #from fastapi.responses import FileResponse
 
@@ -280,12 +275,11 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
     wb.save(archivo)
 
     return FileResponse(archivo, filename=archivo)
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+import os
 
-#app.mount("/static", StaticFiles(directory="static"), name="static")
-
-#@app.get("/")
-#def home():
- #   return FileResponse("static/index.html")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
