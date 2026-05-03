@@ -29,19 +29,6 @@ def get_db():
     finally:
         db.close()
 
-# ---------------------------
-# ENDPOINT LISTAR JOVENES
-# ---------------------------
-@app.get("/buscar")
-def buscar(nombre: str, db: Session = Depends(get_db)):
-    resultados = db.query(models.Joven).filter(
-        models.Joven.nombre.ilike(f"{nombre}%")  # empieza con
-    ).all()
-
-    return [
-        {"id": j.id, "nombre": j.nombre}
-        for j in resultados[:10]
-    ]
 
 @app.get("/conteo")
 def conteo(db: Session = Depends(get_db)):
@@ -53,11 +40,12 @@ def conteo(db: Session = Depends(get_db)):
 @app.post("/jovenes")
 def crear_joven(joven: JovenCreate, db: Session = Depends(get_db)):
     nuevo_joven = models.Joven(
-        nombre=joven.nombre,
-        puntos=0,
-        racha_actual=0,
-        racha_maxima=0
-    )
+    nombre=joven.nombre,
+    puntos_totales=0,
+    puntos_racha=0,
+    racha_actual=0,
+    racha_maxima=0
+)
     db.add(nuevo_joven)
     db.commit()
     db.refresh(nuevo_joven)
@@ -238,7 +226,13 @@ def evento_activo(db: Session = Depends(get_db)):
     return {"evento_id": evento.id}
 
 from fastapi.staticfiles import StaticFiles
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+import os
+from fastapi.staticfiles import StaticFiles
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "static"), html=True))
+
 
 #@app.get("/exportar/{evento_id}")
 #def exportar(evento_id: int, db: Session = Depends(get_db)):
