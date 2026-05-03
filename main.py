@@ -5,6 +5,8 @@ import models
 from pydantic import BaseModel
 from datetime import datetime
 from datetime import timedelta
+from openpyxl import Workbook
+from fastapi.responses import FileResponse
 #import pandas as pd#
 #from fastapi.responses import FileResponse
 
@@ -255,9 +257,34 @@ app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "static"), html=True
 
     #return FileResponse(archivo, filename=archivo)
 
-@app.get("/test")
-def test():
-    return {"mensaje": "funciona test"}
+@app.get("/exportar/{evento_id}")
+def exportar(evento_id: int, db: Session = Depends(get_db)):
+
+    asistencias = db.query(models.Asistencia).filter(
+        models.Asistencia.evento_id == evento_id
+    ).all()
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Asistencia"
+
+    # encabezados
+    ws.append(["Nombre", "Fecha"])
+
+    for a in asistencias:
+        joven = db.query(models.Joven).filter(
+            models.Joven.id == a.joven_id
+        ).first()
+
+        ws.append([
+            joven.nombre,
+            str(a.fecha_hora)
+        ])
+
+    archivo = "asistencia.xlsx"
+    wb.save(archivo)
+
+    return FileResponse(archivo, filename=archivo)
 
 
 
