@@ -28,6 +28,25 @@ def get_db():
     finally:
         db.close()
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def generar_excel(db):
+    print("GENERANDO EXCEL 🔥")
+
+    asistencias = db.query(models.Asistencia).all()
+
+    wb = Workbook()
+    ws = wb.active
+
+    ws.append(["Nombre", "Fecha"])
+
+    for a in asistencias:
+        joven = db.query(models.Joven).filter_by(id=a.joven_id).first()
+        ws.append([joven.nombre, str(a.fecha_hora)])
+
+    ruta = os.path.join(BASE_DIR, "asistencia.xlsx")
+    wb.save(ruta)
+
 
 @app.get("/conteo")
 def conteo(db: Session = Depends(get_db)):
@@ -272,4 +291,9 @@ def ver_excel():
         return {"error": "Excel no existe aún"}
 
     return FileResponse(ruta, filename="asistencia.xlsx")
+
+@app.get("/test/excel")
+def test_excel(db: Session = Depends(get_db)):
+    generar_excel(db)
+    return {"mensaje": "Excel generado"}
 
