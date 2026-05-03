@@ -20,6 +20,8 @@ async function buscar() {
 }
 
 async function registrar(id, nombre) {
+    if (!EVENTO_ID) return;  // evita error
+
     let res = await fetch(`/asistencia_manual?joven_id=${id}&evento_id=${EVENTO_ID}`, {
         method: "POST"
     });
@@ -33,14 +35,6 @@ async function registrar(id, nombre) {
     document.getElementById("resultados").innerHTML = "";
 }
 
-async function actualizarContador() {
-    let res = await fetch(`/evento/${EVENTO_ID}/conteo`)
-    let data = await res.json();
-
-    document.getElementById("contador").innerText =
-        "Asistentes: " + data.asistentes;
-}
-
 let EVENTO_ID = null;
 
 async function obtenerEvento() {
@@ -49,8 +43,18 @@ async function obtenerEvento() {
 
     EVENTO_ID = data.evento_id;
 
-    //  SOLO después de tener evento
+    //  SOLO después de tener el evento
     setInterval(actualizarContador, 2000);
+}
+
+async function actualizarContador() {
+    if (!EVENTO_ID) return;  // evita error
+
+    let res = await fetch(`/evento/${EVENTO_ID}/conteo`)
+    let data = await res.json();
+
+    document.getElementById("contador").innerText =
+        "Asistentes: " + data.asistentes;
 }
 
 obtenerEvento();
