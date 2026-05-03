@@ -5,7 +5,7 @@ import models
 from pydantic import BaseModel
 from datetime import datetime
 from datetime import timedelta
-import pandas as pd
+#import pandas as pd#
 from fastapi.responses import FileResponse
 
 # Crear las tablas
@@ -240,7 +240,7 @@ def evento_activo(db: Session = Depends(get_db)):
 from fastapi.staticfiles import StaticFiles
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
-@app.get("/exportar/{evento_id}")
+#@app.get("/exportar/{evento_id}")
 def exportar(evento_id: int, db: Session = Depends(get_db)):
     asistencias = db.query(models.Asistencia).filter(
         models.Asistencia.evento_id == evento_id
@@ -260,4 +260,9 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
     df.to_excel(archivo, index=False)
 
     return FileResponse(archivo, filename=archivo)
+
+@app.get("/test")
+def test():
+    return {"mensaje": "funciona"}
+
 
