@@ -79,7 +79,7 @@ async function buscar() {
     document.getElementById("resultados").innerHTML = html;
 }
 
-async function registrar(id, nombre) {
+async function registrar(id) {
     if (!EVENTO_ID) return;
 
     let res = await fetch(`/asistencia_manual?joven_id=${id}&evento_id=${EVENTO_ID}`, {
@@ -89,7 +89,7 @@ async function registrar(id, nombre) {
     let data = await res.json();
 
     document.getElementById("mensaje").innerText =
-        "✔ " + nombre + " registrado correctamente";
+        "✔ Registro completado";
 
     document.getElementById("buscador").value = "";
     document.getElementById("resultados").innerHTML = "";
