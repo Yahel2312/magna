@@ -180,6 +180,7 @@ def buscar(nombre: str, db: Session = Depends(get_db)):
     ]
 @app.post("/asistencia_manual")
 def asistencia_manual(joven_id: int, evento_id: int, db: Session = Depends(get_db)):
+
     
     joven = db.query(models.Joven).filter(models.Joven.id == joven_id).first()
     if not joven:
@@ -206,6 +207,21 @@ def asistencia_manual(joven_id: int, evento_id: int, db: Session = Depends(get_d
     db.commit()
 
     return {"mensaje": "Asistencia registrada"}
+def generar_excel(db):
+    asistencias = db.query(models.Asistencia).all()
+
+    wb = Workbook()
+    ws = wb.active
+
+    ws.append(["Nombre", "Fecha"])
+
+    for a in asistencias:
+        joven = db.query(models.Joven).filter_by(id=a.joven_id).first()
+        ws.append([joven.nombre, str(a.fecha_hora)])
+
+    wb.save("asistencia.xlsx")
+    generar_excel(db)
+    
 
 @app.get("/evento/{evento_id}/conteo")
 def conteo_evento(evento_id: int, db: Session = Depends(get_db)):
@@ -226,26 +242,6 @@ def evento_activo(db: Session = Depends(get_db)):
 
     return {"evento_id": evento.id}
 
-#@app.get("/exportar/{evento_id}")
-#def exportar(evento_id: int, db: Session = Depends(get_db)):
- #   asistencias = db.query(models.Asistencia).filter(
-  #      models.Asistencia.evento_id == evento_id
-   # ).all()
-#
- #   datos = []
-
-  #  for a in asistencias:
-   #     joven = db.query(models.Joven).filter(models.Joven.id == a.joven_id).first()
-    #    datos.append({
-     #       "Nombre": joven.nombre,
-      #      "Fecha": a.fecha_hora
-       # })
-
-   # df = pd.DataFrame(datos)
-    #archivo = "asistencia.xlsx"
-    #df.to_excel(archivo, index=False)
-
-    #return FileResponse(archivo, filename=archivo)
 
 @app.get("/api/exportar/{evento_id}")
 def exportar(evento_id: int, db: Session = Depends(get_db)):
