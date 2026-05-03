@@ -1,6 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistencia</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #111;
+            color: white;
+            margin: 0;
+        }
+
+        h1 { font-size: 22px; }
+
+        input {
+            font-size: 20px;
+            padding: 12px;
+            width: 90%;
+            max-width: 400px;
+            margin: 15px auto;
+            display: block;
+            border-radius: 10px;
+            border: none;
+        }
+
+        button {
+            font-size: 18px;
+            margin: 6px auto;
+            padding: 12px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        #mensaje {
+            font-size: 20px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Registro de Asistencia</h1>
+<h2 id="contador">Asistentes: 0</h2>
+
+<input type="text" id="buscador" placeholder="Escribe nombre..." onkeyup="buscar()">
+
+<div id="resultados"></div>
+
+<h2 id="mensaje"></h2>
+
 <script>
 console.log("JS cargado 🔥");
-console.log("Antes de obtener evento");
+
+let EVENTO_ID = null;
 
 async function buscar() {
     let texto = document.getElementById("buscador").value;
@@ -38,19 +95,12 @@ async function registrar(id, nombre) {
     document.getElementById("resultados").innerHTML = "";
 }
 
-let EVENTO_ID = null;
-
 async function obtenerEvento() {
-    console.log("Entró a obtenerEvento");
-
     let res = await fetch("/evento/activo");
     let data = await res.json();
 
-    console.log("Respuesta evento:", data);
-
     EVENTO_ID = data.evento_id;
 
-    // 🔥 IMPORTANTE: activar contador después
     setInterval(actualizarContador, 2000);
 }
 
@@ -64,7 +114,8 @@ async function actualizarContador() {
         "Asistentes: " + data.asistentes;
 }
 
-// 🔥 LLAMADA FINAL
 obtenerEvento();
-
 </script>
+
+</body>
+</html>
