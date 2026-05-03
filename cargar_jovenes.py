@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import pandas as pd
 from database import SessionLocal,engine
 import models
@@ -33,7 +32,6 @@ db.close()
 
 print("Carga completa")
 
-=======
 import pandas as pd
 from database import SessionLocal
 import models
@@ -60,4 +58,3 @@ db.close()
 
 print("Carga completada")
 
->>>>>>> a3f92a2c71fa19384dd1a2e0b93bfd803756c3f0
