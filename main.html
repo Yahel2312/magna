@@ -74,10 +74,17 @@ async function buscar() {
     let html = "";
 
     data.forEach(j => {
-       html += `<button onclick="probarClick(${j.id})">${j.nombre}</button>`;
+       html += `<button data-id="${j.id}">${j.nombre}</button>`;
     });
 
     document.getElementById("resultados").innerHTML = html;
+    document.querySelectorAll("#resultados button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        let id = btn.getAttribute("data-id");
+        console.log("CLICK FUNCIONA:", id);
+        registrar(id);
+    });
+});
 }
 
 async function registrar(id) {
@@ -95,6 +102,7 @@ async function registrar(id) {
     document.getElementById("buscador").value = "";
     document.getElementById("resultados").innerHTML = "";
 }
+
 
 async function obtenerEvento() {
     let res = await fetch("/evento/activo");
