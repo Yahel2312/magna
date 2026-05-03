@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from datetime import timedelta
 #import pandas as pd#
-from fastapi.responses import FileResponse
+#from fastapi.responses import FileResponse
 
 # Crear las tablas
 models.Base.metadata.create_all(bind=engine)
@@ -241,25 +241,25 @@ from fastapi.staticfiles import StaticFiles
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 #@app.get("/exportar/{evento_id}")
-def exportar(evento_id: int, db: Session = Depends(get_db)):
-    asistencias = db.query(models.Asistencia).filter(
-        models.Asistencia.evento_id == evento_id
-    ).all()
+#def exportar(evento_id: int, db: Session = Depends(get_db)):
+ #   asistencias = db.query(models.Asistencia).filter(
+  #      models.Asistencia.evento_id == evento_id
+   # ).all()
+#
+ #   datos = []
 
-    datos = []
+  #  for a in asistencias:
+   #     joven = db.query(models.Joven).filter(models.Joven.id == a.joven_id).first()
+    #    datos.append({
+     #       "Nombre": joven.nombre,
+      #      "Fecha": a.fecha_hora
+       # })
 
-    for a in asistencias:
-        joven = db.query(models.Joven).filter(models.Joven.id == a.joven_id).first()
-        datos.append({
-            "Nombre": joven.nombre,
-            "Fecha": a.fecha_hora
-        })
+   # df = pd.DataFrame(datos)
+    #archivo = "asistencia.xlsx"
+    #df.to_excel(archivo, index=False)
 
-    df = pd.DataFrame(datos)
-    archivo = "asistencia.xlsx"
-    df.to_excel(archivo, index=False)
-
-    return FileResponse(archivo, filename=archivo)
+    #return FileResponse(archivo, filename=archivo)
 
 @app.get("/test")
 def test():
