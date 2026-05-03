@@ -276,14 +276,10 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
 
     return FileResponse(archivo, filename=archivo)
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
-
 @app.get("/")
 def home():
-    return FileResponse(os.path.join(BASE_DIR, "static", "index.html"))
-
+    return FileResponse(os.path.join(BASE_DIR, "main.html"))
