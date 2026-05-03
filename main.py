@@ -227,12 +227,6 @@ def evento_activo(db: Session = Depends(get_db)):
 
     return {"evento_id": evento.id}
 
-from fastapi.staticfiles import StaticFiles
-import os
-from fastapi.staticfiles import StaticFiles
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 #@app.get("/exportar/{evento_id}")
 #def exportar(evento_id: int, db: Session = Depends(get_db)):
  #   asistencias = db.query(models.Asistencia).filter(
@@ -289,6 +283,14 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
 #def home():
  #   return FileResponse("static/index.html")
 
+from fastapi.staticfiles import StaticFiles
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+
 @app.get("/")
-def root():
-    return {"mensaje": "API funcionando correctamente"}
+def home():
+    return FileResponse(os.path.join(BASE_DIR, "static", "index.html"))
+
