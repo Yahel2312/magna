@@ -5,9 +5,5 @@ sqlalchemy
 pydantic
 pandas
 openpyxl
-=======
-fastapi
-uvicorn
-sqlalchemy
-pydantic
+
 >>>>>>> a3f92a2c71fa19384dd1a2e0b93bfd803756c3f0
