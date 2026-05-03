@@ -181,7 +181,6 @@ def buscar(nombre: str, db: Session = Depends(get_db)):
 @app.post("/asistencia_manual")
 def asistencia_manual(joven_id: int, evento_id: int, db: Session = Depends(get_db)):
 
-    
     joven = db.query(models.Joven).filter(models.Joven.id == joven_id).first()
     if not joven:
         return {"error": "No encontrado"}
@@ -201,27 +200,16 @@ def asistencia_manual(joven_id: int, evento_id: int, db: Session = Depends(get_d
     nueva = models.Asistencia(joven_id=joven_id, evento_id=evento_id)
     db.add(nueva)
 
-    # gamificación (usa la lógica que ya tienes)
     joven.puntos_totales += 10
 
     db.commit()
 
-    return {"mensaje": "Asistencia registrada"}
-def generar_excel(db):
-    asistencias = db.query(models.Asistencia).all()
-
-    wb = Workbook()
-    ws = wb.active
-
-    ws.append(["Nombre", "Fecha"])
-
-    for a in asistencias:
-        joven = db.query(models.Joven).filter_by(id=a.joven_id).first()
-        ws.append([joven.nombre, str(a.fecha_hora)])
-
-    wb.save("asistencia.xlsx")
+    # 🔥 AQUÍ VA
     generar_excel(db)
-    
+
+    return {"mensaje": "Asistencia registrada"}
+
+
 
 @app.get("/evento/{evento_id}/conteo")
 def conteo_evento(evento_id: int, db: Session = Depends(get_db)):
@@ -279,3 +267,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 @app.get("/")
 def home():
     return FileResponse(os.path.join(BASE_DIR, "main.html"))
+
+@app.get("/admin/excel")
+def ver_excel():
+    ruta = os.path.join(BASE_DIR, "asistencia.xlsx")
+
+    if not os.path.exists(ruta):
+        return {"error": "Excel no existe aún"}
+
+    return FileResponse(ruta, filename="asistencia.xlsx")
