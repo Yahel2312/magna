@@ -41,8 +41,6 @@ async function actualizarContador() {
         "Asistentes: " + data.asistentes;
 }
 
-setInterval(actualizarContador, 2000);
-
 let EVENTO_ID = null;
 
 async function obtenerEvento() {
@@ -50,6 +48,9 @@ async function obtenerEvento() {
     let data = await res.json();
 
     EVENTO_ID = data.evento_id;
+
+    //  SOLO después de tener evento
+    setInterval(actualizarContador, 2000);
 }
 
 obtenerEvento();
