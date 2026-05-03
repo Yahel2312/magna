@@ -55,7 +55,6 @@
 <h2 id="mensaje"></h2>
 
 <script>
-console.log("JS cargado 🔥");
 
 
 let EVENTO_ID = null;
@@ -71,21 +70,22 @@ async function buscar() {
     let res = await fetch(`/buscar?nombre=${texto}`);
     let data = await res.json();
 
-    let html = "";
+    let contenedor = document.getElementById("resultados");
+    contenedor.innerHTML = "";
 
     data.forEach(j => {
-       html += `<button data-id="${j.id}">${j.nombre}</button>`;
-    });
+        let btn = document.createElement("button");
+        btn.textContent = j.nombre;
 
-    document.getElementById("resultados").innerHTML = html;
-    document.querySelectorAll("#resultados button").forEach(btn => {
-    btn.addEventListener("click", () => {
-        let id = btn.getAttribute("data-id");
-        console.log("CLICK FUNCIONA:", id);
-        registrar(id);
+        btn.addEventListener("click", () => {
+            console.log("CLICK FUNCIONA:", j.id);
+            registrar(j.id);
+        });
+
+        contenedor.appendChild(btn);
     });
-});
 }
+
 
 async function registrar(id) {
     if (!EVENTO_ID) return;
