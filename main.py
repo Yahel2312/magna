@@ -233,9 +233,6 @@ from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "static"), html=True))
-
-
 #@app.get("/exportar/{evento_id}")
 #def exportar(evento_id: int, db: Session = Depends(get_db)):
  #   asistencias = db.query(models.Asistencia).filter(
@@ -257,7 +254,7 @@ app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "static"), html=True
 
     #return FileResponse(archivo, filename=archivo)
 
-@app.get("/exportar/{evento_id}")
+@app.get("/api/exportar/{evento_id}")
 def exportar(evento_id: int, db: Session = Depends(get_db)):
 
     asistencias = db.query(models.Asistencia).filter(
@@ -285,6 +282,9 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
     wb.save(archivo)
 
     return FileResponse(archivo, filename=archivo)
+
+app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "static"), html=True))
+
 
 
 
