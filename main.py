@@ -297,5 +297,6 @@ def test_excel(db: Session = Depends(get_db)):
     generar_excel(db)
     return {"mensaje": "Excel generado"}
 
-    
+    return {"mensaje": "VERSION NUEVA 🔥🔥🔥"}
+
 
