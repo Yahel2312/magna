@@ -1,51 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Asistencia</title>
+    <title>Asistencia</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #74143e;
+            color: white;
+        }
 
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-    background: #74143e;
-    color: white;
-    margin: 0;
-}
+        input {
+            font-size: 22px;
+            padding: 10px;
+            width: 300px;
+            margin: 20px;
+        }
 
-input, button {
-    font-size: 18px;
-    padding: 12px;
-    width: 90%;
-    max-width: 400px;
-    margin: 10px auto;
-    display: block;
-    border-radius: 10px;
-    border: none;
-}
+        button {
+            font-size: 18px;
+            margin: 5px;
+            padding: 12px;
+            width: 300px;
+            border-radius: 8px;
+            border: none;
+        }
 
-#resultados button {
-    cursor: pointer;
-}
-</style>
+        button:hover {
+            background: #01ff0e;
+            color: black;
+            cursor: pointer;
+        }
+
+        #mensaje {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #f80f0f;
+        }
+    </style>
 </head>
-
 <body>
 
 <h1>Registro de Asistencia</h1>
 <h2 id="contador">Asistentes: 0</h2>
 
-<input type="text" id="buscador" placeholder="Escribe nombre...">
+<input type="text" id="buscador" placeholder="Escribe nombre..." onkeyup="buscar()">
 
 <div id="resultados"></div>
 
 <h2 id="mensaje"></h2>
 
 <script>
-let EVENTO_ID = null;
-
-document.getElementById("buscador").addEventListener("keyup", buscar);
-
 async function buscar() {
     let texto = document.getElementById("buscador").value;
 
@@ -57,56 +62,50 @@ async function buscar() {
     let res = await fetch(`/buscar?nombre=${texto}`);
     let data = await res.json();
 
-    let contenedor = document.getElementById("resultados");
-    contenedor.innerHTML = "";
+    let html = "";
 
     data.forEach(j => {
-        let btn = document.createElement("button");
-        btn.textContent = j.nombre;
-
-        btn.onclick = () => registrar(j.id, j.nombre);
-
-        contenedor.appendChild(btn);
+        html += `<button onclick="registrar(${j.id}, '${j.nombre}')">${j.nombre}</button>`;
     });
+
+    document.getElementById("resultados").innerHTML = html;
 }
 
 async function registrar(id, nombre) {
-    if (!EVENTO_ID) return;
-
     let res = await fetch(`/asistencia_manual?joven_id=${id}&evento_id=${EVENTO_ID}`, {
-        method: "POST"
-    });
+    method: "POST"
+});
 
     let data = await res.json();
 
     document.getElementById("mensaje").innerText =
-        "✔ " + nombre + " registrado correctamente";
+    "✔ " + nombre + " registrado correctamente";
 
     document.getElementById("buscador").value = "";
     document.getElementById("resultados").innerHTML = "";
 }
-
-async function obtenerEvento() {
-    let res = await fetch("/evento/activo");
-    let data = await res.json();
-
-    EVENTO_ID = data.evento_id;
-
-    setInterval(actualizarContador, 2000);
-}
-
 async function actualizarContador() {
-    if (!EVENTO_ID) return;
-
-    let res = await fetch(`/evento/${EVENTO_ID}/conteo`);
+    let res = await fetch(`/evento/${EVENTO_ID}/conteo`)
     let data = await res.json();
 
     document.getElementById("contador").innerText =
         "Asistentes: " + data.asistentes;
 }
 
-obtenerEvento();
+// actualizar cada 2 segundos
+setInterval(actualizarContador, 2000);
+
+let EVENTO_ID = null;
+
+async function obtenerEvento() {
+    let res = await fetch("/evento/activo");
+    let data = await res.json();
+
+    EVENTO_ID = data.evento_id;
+}
 </script>
+
+obtenerEvento();
 
 </body>
 </html>
