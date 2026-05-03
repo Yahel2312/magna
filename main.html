@@ -1,4 +1,7 @@
 <script>
+console.log("JS cargado 🔥");
+console.log("Antes de obtener evento");
+
 async function buscar() {
     let texto = document.getElementById("buscador").value;
 
@@ -20,7 +23,7 @@ async function buscar() {
 }
 
 async function registrar(id, nombre) {
-    if (!EVENTO_ID) return;  // evita error
+    if (!EVENTO_ID) return;
 
     let res = await fetch(`/asistencia_manual?joven_id=${id}&evento_id=${EVENTO_ID}`, {
         method: "POST"
@@ -46,20 +49,22 @@ async function obtenerEvento() {
     console.log("Respuesta evento:", data);
 
     EVENTO_ID = data.evento_id;
+
+    // 🔥 IMPORTANTE: activar contador después
+    setInterval(actualizarContador, 2000);
 }
 
 async function actualizarContador() {
-    if (!EVENTO_ID) return;  // evita error
+    if (!EVENTO_ID) return;
 
-    let res = await fetch(`/evento/${EVENTO_ID}/conteo`)
+    let res = await fetch(`/evento/${EVENTO_ID}/conteo`);
     let data = await res.json();
 
     document.getElementById("contador").innerText =
         "Asistentes: " + data.asistentes;
 }
 
+// 🔥 LLAMADA FINAL
 obtenerEvento();
 
 </script>
-console.log("JS cargado 🔥");
-console.log("Antes de obtener evento");
