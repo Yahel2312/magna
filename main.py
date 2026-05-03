@@ -283,9 +283,9 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
 
     return FileResponse(archivo, filename=archivo)
 
-app.mount("/", StaticFiles(directory=os.path.join(BASE_DIR, "static"), html=True))
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/api/test")
-def test():
-    return {"mensaje": "api funciona"}
+@app.get("/")
+def home():
+    return FileResponse("static/index.html")
 
