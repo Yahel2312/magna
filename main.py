@@ -265,4 +265,5 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
 def test():
     return {"mensaje": "funciona"}
 
+print("prueba")
 
