@@ -38,13 +38,14 @@ async function registrar(id, nombre) {
 let EVENTO_ID = null;
 
 async function obtenerEvento() {
+    console.log("Entró a obtenerEvento");
+
     let res = await fetch("/evento/activo");
     let data = await res.json();
 
-    EVENTO_ID = data.evento_id;
+    console.log("Respuesta evento:", data);
 
-    //  SOLO después de tener el evento
-    setInterval(actualizarContador, 2000);
+    EVENTO_ID = data.evento_id;
 }
 
 async function actualizarContador() {
@@ -61,3 +62,4 @@ obtenerEvento();
 
 </script>
 console.log("JS cargado 🔥");
+console.log("Antes de obtener evento");
