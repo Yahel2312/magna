@@ -283,9 +283,12 @@ def exportar(evento_id: int, db: Session = Depends(get_db)):
 
     return FileResponse(archivo, filename=archivo)
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
+
+#@app.get("/")
+#def home():
+ #   return FileResponse("static/index.html")
 
 @app.get("/")
-def home():
-    return FileResponse("static/index.html")
-
+def root():
+    return {"mensaje": "API funcionando correctamente"}
